@@ -49,4 +49,15 @@ public class WineController {
         }
     }
 
+    @PutMapping("/wines/{id}")
+    public ResponseEntity<?> updateById(@PathVariable int id, @RequestBody WineEntity inputWine) {
+        WineEntity foundWine = wineService.findById(id);
+        if (foundWine != null) {
+            WineEntity updatedWine = wineService.save(inputWine);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedWine);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Wine with id-%d not found!", id));
+        }
+    }
+
 }
