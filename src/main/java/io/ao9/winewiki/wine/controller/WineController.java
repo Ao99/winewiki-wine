@@ -22,20 +22,24 @@ public class WineController {
     }
 
     @PostMapping("/wines")
-    public WineEntity createWine(@RequestBody WineEntity inputWine) {
+    public ResponseEntity<WineEntity> createWine(@RequestBody WineEntity inputWine) {
         WineEntity outputWine = wineService.save(inputWine);
-        return outputWine;
+        return ResponseEntity.status(HttpStatus.CREATED).body(outputWine);
     }
 
     @GetMapping("/wines")
-    public List<WineEntity> getAllWines() {
-        return wineService.findAll();
+    public ResponseEntity<List<WineEntity>> getAllWines() {
+        return ResponseEntity.status(HttpStatus.OK).body(wineService.findAll());
     }
 
     @GetMapping("/wines/{id}")
-    public WineEntity getById(@PathVariable int id) {
+    public ResponseEntity<?> getById(@PathVariable int id) {
         WineEntity outputWine = wineService.findById(id);
-        return outputWine;
+        if (outputWine != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(outputWine);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Wine with id-%d not found!", id));
+        }
     }
 
     @DeleteMapping("/wines/{id}")
